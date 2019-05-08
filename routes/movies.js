@@ -14,7 +14,7 @@ router.get('/:id', async(req, res) => {
     //Find movie by id
     const movie = await Movie.findById(req.params.id);
     //If not return 404 error
-    if(!movie) return res.status(404).send('The customer with the given Id was not found');
+    if(!movie) return res.status(404).send('The movie with the given Id was not found');
     res.send(movie);
 });
 
@@ -24,10 +24,10 @@ router.post('/', async (req, res) => {
     const { error } = validate(req.body);
     if(error) return res.status(400).send(error.details[0].message);
     //Gent genre
-    const genre = Genre.findById(req.body.genreId);
+    const genre = await Genre.findById(req.body.genreId);
     if(!genre) return res.status(400).send('Invalid genre.');
     //Add movie to DB
-    let movie = new Movie({
+    const movie = new Movie({
         title: req.body.title,
         numberInStock: req.body.numberInStock,
         dailyRentalRate: req.body.dailyRentalRate,
@@ -37,7 +37,7 @@ router.post('/', async (req, res) => {
         }
     });
 
-    movie = await movie.save();
+    await movie.save();
 
     res.send(movie);
 
