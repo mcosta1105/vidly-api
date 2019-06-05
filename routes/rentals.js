@@ -1,6 +1,7 @@
 const { Rental, validate } = require('../models/rental');
 const { Customer } = require('../models/customer');
 const { Movie } = require('../models/movie');
+const auth = require('../middleware/auth');
 const express = require('express');
 const router = express.Router();
 const moongose = require('mongoose');
@@ -9,7 +10,7 @@ const Fawn = require('fawn');
 Fawn.init(moongose);
 
 //Create a new rental
-router.post('/', async(req ,res) => {
+router.post('/', auth, async(req ,res) => {
     //Validate body of request
     const { error } = validate(req.body);
     if(error) return res.status(400).send(error.details[0].message);
